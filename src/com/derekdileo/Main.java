@@ -10,44 +10,41 @@ public class Main {
 
     public static int numFiles = 0;
     public static long totalSize = 0;
-    public static boolean isDir = false;
+    public static TreeDirectory treeDirectory;
+
+    public static Path currentPath;
 
     public static void main(String[] args) throws Exception {
-        Path currentPath = Paths.get(System.getProperty("user.dir"));
+        currentPath = Paths.get(System.getProperty("user.dir"));
         System.out.println("\ncurrentPath = " + currentPath + "\n");
         listDir(currentPath, 0);
     }
 
-
-    public static long listDir(Path path, int depth) throws Exception {
+    public static void listDir(Path path, int depth) throws Exception {
 
         BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-        isDir = attr.isDirectory();
 
         // if directory, list the files, and traverse down inside each
-        if(isDir) {
+        if(attr.isDirectory()) {
+            treeDirectory = new TreeDirectory(path.getParent(), depth);
+
             // list the directory
             DirectoryStream<Path> paths = Files.newDirectoryStream(path);
 
-            // print directory file name, number of files, total size of files, list of child folders
-
-
             // print directory name, number of files, total size of files, list of child folders
-            System.out.println(spacesForDepth(depth) + " >" + path.getFileName() + " [Directory Size: " + attr.size() + " B], [Number of Files: " + numFiles + "], [Total Size: " + totalSize + "]");
+//            System.out.println(spacesForDepth(depth) + " >" + path.getFileName() + " [Directory Size: " + attr.size() + " B], [Number of Files: " + numFiles + "], [Total Size: " + totalSize + "]");
 
             // if subdirectory is found, call listDir recursively
             for (Path tempPath: paths) {
-                totalSize += listDir(tempPath, depth + 1);
-                numFiles++;
+                listDir(tempPath, depth + 1);
             }
 
         } else {
-            numFiles++;
-            totalSize += attr.size();
-            System.out.println(spacesForDepth(depth) + " - - " + path.getFileName() + " [File Size: " + attr.size() + " B]");
+//            System.out.println(spacesForDepth(depth) + " - - " + path.getFileName() + " [File Size: " + attr.size() + " B]");
+            TreeFile treeFile = new TreeFile(path, attr.size());
+            treeDirectory.addChild(treeFile);
+            treeDirectory.setTotalSize(treeDirectory.getTotalSize() + attr.size());
         }
-
-        return totalSize;
 
     }
 
