@@ -1,29 +1,28 @@
 package com.derekdileo;
 
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class TreeFile {
-    Path parentDirectory;
-    long fileSize;
+    int depth;
+    Path path;
+    BasicFileAttributes attr;
 
-    public TreeFile(Path parentDirectory, long fileSize) {
-        this.parentDirectory = parentDirectory;
-        this.fileSize = fileSize;
+    public TreeFile(int depth, Path path, BasicFileAttributes attr) {
+        this.depth = depth;
+        this.path = path;
+        this.attr = attr;
     }
 
-    public Path getParentDirectory() {
-        return parentDirectory;
+    public int getDepth() {
+        return depth;
     }
 
-    public void setParentDirectory(Path parentDirectory) {
-        this.parentDirectory = parentDirectory;
+    public Path getPath() {
+        return path;
     }
 
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
+    public BasicFileAttributes getAttr() {
+        return attr;
     }
 }
